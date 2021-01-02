@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    page
+    <button onclick="getdata()">get data</button>
+    <audio id='audiodesc' src=""></audio>
+    <script>
+      function loaddata() {
+        console.log(audiodata);
+      }
+      //<!-- let metadata = {} -->
+      function getdata() {
+        fetch(
+          "https://52-90-82-235.maverickmaven.com/geotourdata/json.cfm?h=-107,37,s,en,3A771765",
+          { method: "GET" }
+        )
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            let audiodata = data.features[1].assets[0].audio;
+            let audioList = []
+
+            //create a loop to get the audio title and map it with audio length
+            var lengt = data.features.length
+            for (var i; i < lengt-1  ; i++){
+               audioList.append(data.features[i].assets[0].audio)
+            }
+            console.log(audioList)
+
+
+            console.log(data.features.length)
+            console.log(audiodata);
+            let au = document.getElementById('audiodesc')
+            au.src = audiodata
+            
+            au.addEventListener('loadedmetadata', function () {
+                  // Obtain the duration in seconds of the audio file (with milliseconds as well, a float value)
+                  var duration = au.duration;
+
+                  // example 12.3234 seconds
+                  console.log("The duration of the song is of: " + duration + " seconds");
+                  // Alternatively, just display the integer value with
+                  // parseInt(duration)
+                  // 12 seconds
+              }, false);
+          })
+          .then(loaddata());
+      }
+    </script>
+  </body>
+</html>
